@@ -20,4 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = "2.0.3"
   s.summary = "Text Adventure Framework"
+  
+  s.add_dependency( "activesupport", ">= 5.0.0" )
+  
 end
