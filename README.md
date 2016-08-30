@@ -2,6 +2,11 @@
 
 Text Adventure framework
 
+## Installation
+
+    gem 'demogorgon'
+    
+
 ## Copyright
 
 Copyright (c) 2016 Jeff McFadden.

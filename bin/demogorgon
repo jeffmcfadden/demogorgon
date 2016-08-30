@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'demogorgon'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: demogorgon [options]"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+end.parse!
+
+dir_to_load = ARGV.last
+
+if dir_to_load[0] != '/'
+  dir_to_load = "#{Dir.getwd}/#{dir_to_load}"
+end
+
+@game = Demogorgon::Game.new
+@game.load_from_directory( dir_to_load )
+
+while @game.not_over?
+  printf "> "
+  command = $stdin.gets
+  
+  command = command.chomp
+  
+  puts @game.user_command( command )
+end
+
+# # p options
+# # p ARGV
+#
+# zway = ZWay::Cli::Client.new
+# zway.load_config!
+#
+# # puts "Aliases:"
+# # puts zway.aliases
+#
+# if ARGV.last == "login"
+#   zway.login!
+# elsif ARGV.last == "aliases"
+#   puts "Known Aliases:"
+#   zway.aliases.each do |a|
+#     a.each do |k,v|
+#       puts "#{k} => #{v}"
+#     end
+#   end
+# else
+#
+#   device_id = ARGV.shift
+#
+#   while command = ARGV.shift
+#     if zway.respond_to?( command.to_sym )
+#       zway.send( command.to_sym, device_id )
+#     end
+#   end
+# end
