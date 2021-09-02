@@ -4,8 +4,9 @@ Text Adventure framework
 
 ## Installation
 
-    gem 'demogorgon'
+    $ gem install 'demogorgon'
     
+    $ demogorgon my_cool_game.rb
 
 ## Copyright
 
