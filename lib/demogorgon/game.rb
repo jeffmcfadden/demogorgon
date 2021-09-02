@@ -1,47 +1,74 @@
 module Demogorgon
   class Game
-    attr_accessor :player
+    extend Buildable
+    buildable_with :welcome, :starting_location
+
     attr_accessor :rooms
+    attr_accessor :player
     attr_accessor :items
-    attr_accessor :npcs
+    attr_accessor :turn_count
     attr_accessor :over
-    
-    def initialize
-      self.player = nil
-      self.rooms  = []
-      self.items  = []
-      self.npcs   = []
-      self.over   = false
+    attr_accessor :current_location
+    attr_accessor :commands
+
+    def initialize(*)
+      super
+
+      self.rooms      = []
+      self.over       = false
+      self.turn_count = 0
+      self.commands   = []
+      self.player     = Player.new
     end
-    
-    def load_from_directory(dir)
-      puts "load_from_directory( #{dir} )"
+
+    def over?
+      over
     end
-    
-    def load_from_savefile
-    end
-    
-    def save
-    end
-    
-    def user_command(command)
-      if command == "exit"
-        puts "Your wish is my command. See you soon."
-        puts " "
-        user_exit
-      else
-        puts "I don't understand #{command}"
-        puts " "
-      end
-    end
-    
-    def not_over?
-      !over
-    end
-    
-    def user_exit
+
+    def over!
       self.over = true
     end
-    
+
+    def room(&block)
+      @room = Demogorgon::Room.new
+      @room.instance_eval(&block)
+      @rooms << @room
+    end
+
+    def command(&block)
+      @command = Demogorgon::Command.new
+      @command.instance_eval(&block)
+      @commands << @command
+    end
+
+    def start
+      self.current_location = rooms.find{ |r| r.id == starting_location }
+    end
+
+    def status
+      status = "You are #{current_location.preposition} #{current_location.name}.\n"
+      status += current_location.items.collect{ |i| "There is a #{i.name} here." }.join( "\n" ) + "\n"
+      status += current_location.npcs.collect{ |i| "#{i.name} is here." }.join( "\n" )
+      status
+    end
+
+    def list_inventory
+      if player.inventory.empty?
+        Terminal.puts "You aren't carrying anything"
+      else
+        Terminal.puts "Inventory: " + player.inventory.collect{ |i| i.name }.join( ", " )
+      end
+    end
+
+    def move(path)
+      if current_location.paths.include? path.to_sym
+        self.current_location = rooms.find{ |r| r.id == current_location.paths[path.to_sym] }
+        self.current_location.visited(self)
+      else
+        Terminal.puts "You can't go that direction from here."
+        Terminal.puts "Valid directions are: #{current_location.paths.keys.join( "," )}"
+      end
+    end
+
   end
 end

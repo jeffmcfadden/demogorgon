@@ -9,5 +9,5 @@ Text Adventure framework
 
 ## Copyright
 
-Copyright (c) 2016 Jeff McFadden.
+Copyright (c) 2016-2021 Jeff McFadden.
 See LICENSE.txt for further details.

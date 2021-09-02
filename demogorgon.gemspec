@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
   
   s.bindir        = 'bin'
   s.executables   << 'demogorgon'
-  
-  s.add_dependency( "activesupport", ">= 5.0.0" )
-  
+
+  s.add_dependency( "pastel", "~>0.8" )
+  s.add_dependency( "tty-screen", "~>0.8" )
+
 end
