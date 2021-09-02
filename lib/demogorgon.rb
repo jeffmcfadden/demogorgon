@@ -3,6 +3,7 @@ require 'pastel'
 require 'demogorgon/terminal'
 require 'demogorgon/buildable'
 require 'demogorgon/item'
+require 'demogorgon/path'
 require 'demogorgon/room'
 require 'demogorgon/player'
 require 'demogorgon/non_player_character'
@@ -31,7 +32,7 @@ module Demogorgon
 
       if cmd == ""
         Terminal.puts g.current_location.long_description
-        Terminal.puts "There are exits to the #{g.current_location.paths.keys.join(', ')}"
+        Terminal.puts "There are exits to the #{g.available_directions.join(', ')}"
       elsif item = g.current_location.items.find{ |i| i.name.downcase == cmd }
         Terminal.puts item.long_description
       else

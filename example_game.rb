@@ -8,7 +8,10 @@ Demogorgon.define do
     short_description "a dingy, damp cell with rock walls and a rusting iron door."
     long_description "The jail cell is dark, damp, and old. The rock floor is worn smooth. There are lines on the wall where someone (you?) has been keeping track of the days. The bars of the old iron door are rusted, and the floor beneath is stained orange. A guard lies unconscious out in the hallway."
 
-    path :east, :south_hallway
+    path {
+      direction :east
+      destination :south_hallway
+    }
 
     item do
       id :gross_bucket
@@ -25,7 +28,6 @@ Demogorgon.define do
         Demogorgon::Terminal.puts "You attempt to attack Bob."
       }
     end
-
   end
 
   room do
@@ -73,6 +75,16 @@ Demogorgon.define do
     path :west,  :cell_2
     path :south, :south_hallway
     path :north, :north_hallway
+
+    item do
+      id :torch
+      article "a"
+      name "torch"
+      short_description "Fire on a stick"
+      long_description "It's a torch, about a foot long. It seems to burn without burning up."
+      provides_light true
+      carryable true
+    end
   end
 
   room do
@@ -91,8 +103,9 @@ Demogorgon.define do
     name "Dark Corridor"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
+    has_light false
 
-    path :east,  :dark_stairs
+    path :east,  :dark_stairs, true
     path :south, :north_hallway
   end
 
@@ -101,6 +114,7 @@ Demogorgon.define do
     name "Dark stairs"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
+    has_light false
 
     path :west,  :corridor
     path :east, :central_chamber
@@ -138,7 +152,7 @@ Demogorgon.define do
       id :troll
       name "Troll"
       friendly false
-      on_attack -> (g) {
+      on_attack = -> (g) {
         Demogorgon::Terminal.puts "You attempt to attack the troll."
       }
     end

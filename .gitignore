@@ -51,3 +51,4 @@ pkg
 #*.rbc
 
 .idea
+.ruby-version

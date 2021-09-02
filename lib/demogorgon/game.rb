@@ -29,6 +29,10 @@ module Demogorgon
       self.over = true
     end
 
+    def light_present?
+      current_location.has_light? || player.inventory.any?{ |i| i.provides_light? }
+    end
+
     def room(&block)
       @room = Demogorgon::Room.new
       @room.instance_eval(&block)
@@ -60,14 +64,31 @@ module Demogorgon
       end
     end
 
-    def move(path)
-      if current_location.paths.include? path.to_sym
-        self.current_location = rooms.find{ |r| r.id == current_location.paths[path.to_sym] }
+    def move(direction)
+      if available_directions.include? direction.to_sym
+        self.current_location = room_in_direction(direction)
         self.current_location.visited(self)
       else
         Terminal.puts "You can't go that direction from here."
-        Terminal.puts "Valid directions are: #{current_location.paths.keys.join( "," )}"
+        Terminal.puts "Valid directions are: #{available_directions.join( ", " )}"
       end
+    end
+
+    def room_in_direction(direction)
+      room_id = current_location.paths.find{ |p| p.direction == direction }.destination
+      rooms.find{ |r| r.id == room_id }
+    end
+
+    def available_paths
+      current_location.paths.select{ |p| self.light_present? || !(p.requires_light?) }
+    end
+
+    def available_destinations
+      available_paths.collect{ |p| p.destination }
+    end
+
+    def available_directions
+      available_paths.collect{ |p| p.direction }
     end
 
   end
