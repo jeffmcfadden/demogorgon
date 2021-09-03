@@ -1,10 +1,12 @@
 module Demogorgon
   class NonPlayerCharacter
     extend Buildable
-    buildable_with :id, :name, :friendly
+    buildable_with :id, :name, :nickname, :friendly, :long_description
+
+    attr_accessor :on_attack_block
 
     def initialize
-      @on_attack = -> (g) {
+      @on_attack_block = -> (g) {
         if friendly?
           Demogorgon::Terminal.puts "You can't attack #{name}."
         end
@@ -16,11 +18,11 @@ module Demogorgon
     end
 
     def on_attack(block)
-      @on_attack = block
+      @on_attack_block = block
     end
 
     def attack!(game)
-      @on_attack.(game) unless @on_attack.nil?
+      @on_attack_block.(game) unless @on_attack_block.nil?
     end
 
   end

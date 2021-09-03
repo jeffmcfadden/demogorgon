@@ -1,15 +1,15 @@
 module Demogorgon
   class Game
     extend Buildable
-    buildable_with :welcome, :starting_location
+    buildable_with :welcome, :starting_location, :win_message, :lose_message
 
     attr_accessor :rooms
     attr_accessor :player
-    attr_accessor :items
     attr_accessor :turn_count
     attr_accessor :over
     attr_accessor :current_location
     attr_accessor :commands
+    attr_accessor :skip_next_status
 
     def initialize(*)
       super
@@ -19,14 +19,33 @@ module Demogorgon
       self.turn_count = 0
       self.commands   = []
       self.player     = Player.new
+      self.skip_next_status = false
     end
 
     def over?
-      over
+      @over
     end
 
     def over!
-      self.over = true
+      @over = true
+    end
+
+    def win!
+      Terminal.puts win_message
+      @over = true
+    end
+
+    def lose!
+      Terminal.puts lose_message
+      @over = true
+    end
+
+    def items
+      rooms.collect{ |r| r.items }.flatten
+    end
+
+    def item(id)
+      items.find{ |i| i.id == id }
     end
 
     def light_present?
@@ -51,7 +70,7 @@ module Demogorgon
 
     def status
       status = "You are #{current_location.preposition} #{current_location.name}.\n"
-      status += current_location.items.collect{ |i| "There is a #{i.name} here." }.join( "\n" ) + "\n"
+      status += current_location.visible_items.collect{ |i| "There is #{i.article} #{i.name} here." }.join( "\n" ) + "\n"
       status += current_location.npcs.collect{ |i| "#{i.name} is here." }.join( "\n" )
       status
     end

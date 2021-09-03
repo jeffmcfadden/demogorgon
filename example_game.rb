@@ -1,10 +1,21 @@
 Demogorgon.define do
-  welcome "Welcome to My Little Dungeon!\n\nYou awake to find yourself lying on the floor of a cell in a dungeon. The door is open and the guard is lying on the floor in the hallway, unconscious.\n\nType 'help' if you need it."
+  welcome <<~STR
+    ------------------------------------------------------------
+    Welcome to My Little Dungeon!
+
+    You awake to find yourself lying on the floor of a cell in a dungeon. The door is open and the guard is lying on the floor in the hallway, unconscious.
+
+    Type 'help' if you need it.
+    ------------------------------------------------------------
+    STR
+
+  win_message "You win!"
+  lose_message "You lose!"
 
   room do
     id :cell_1
     preposition "in"
-    name "a jail cell"
+    name "jail cell #1"
     short_description "a dingy, damp cell with rock walls and a rusting iron door."
     long_description "The jail cell is dark, damp, and old. The rock floor is worn smooth. There are lines on the wall where someone (you?) has been keeping track of the days. The bars of the old iron door are rusted, and the floor beneath is stained orange. A guard lies unconscious out in the hallway."
 
@@ -19,21 +30,12 @@ Demogorgon.define do
       short_description "A small metal bucket. It looks pretty gross."
       long_description  "You look closely at the bucket and nearly pass out from the smell. It's clearly not something you want to know more about."
     end
-
-    npc do
-      id :npc1
-      name "Bob"
-      friendly false
-      on_attack -> (g) {
-        Demogorgon::Terminal.puts "You attempt to attack Bob."
-      }
-    end
   end
 
   room do
     id :cell_2
     preposition "in"
-    name "A Jail Cell"
+    name "jail cell #2"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -44,7 +46,7 @@ Demogorgon.define do
   room do
     id :cell_3
     preposition "in"
-    name "A Jail Cell"
+    name "jail cell #3"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -54,7 +56,8 @@ Demogorgon.define do
 
   room do
     id :south_hallway
-    name "South hallway"
+    preposition "in"
+    name "the south hallway"
     short_description "Gross hallway with a guard lying asleep on the floor"
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -64,11 +67,30 @@ Demogorgon.define do
     on_visit -> (g){
       # puts "Hi you visited me and I ran some code"
     }
+
+    npc do
+      id :npc1
+      name "An unconscious guard"
+      nickname "guard"
+      friendly true
+      long_description "There's not much to see. The guard is unconscious, and doesn't appear to be carrying anything interesting."
+    end
+
+    item do
+      id :dagger
+      article "a"
+      name "small dagger"
+      synonyms "dagger"
+      short_description "a small, sharp dagger."
+      long_description "It's a small dagger. The blade is sharp, but it's unlikely to do much damage against a big monster."
+      provides_light false
+      carryable true
+    end
   end
 
   room do
     id :central_hallway
-    name "Central hallway"
+    name "the central hallway"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -89,7 +111,7 @@ Demogorgon.define do
 
   room do
     id :north_hallway
-    name "North hallway"
+    name "the north hallway"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -100,7 +122,7 @@ Demogorgon.define do
 
   room do
     id :corridor
-    name "Dark Corridor"
+    name "a dark corridor"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
     has_light false
@@ -111,7 +133,8 @@ Demogorgon.define do
 
   room do
     id :dark_stairs
-    name "Dark stairs"
+    preposition "on"
+    name "a dark staircase"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
     has_light false
@@ -122,7 +145,7 @@ Demogorgon.define do
 
   room do
     id :central_chamber
-    name "Central hallway"
+    name "the central chamber"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -133,16 +156,39 @@ Demogorgon.define do
 
   room do
     id :south_chamber
-    name "South chamber"
+    name "the south chamber"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
     path :north, :central_chamber
+
+    item do
+      id :treasure
+      article "some"
+      name "treasure"
+      synonyms "treasure"
+      short_description "a small pile of gold coins"
+      long_description "The coins seem to be stamped with an image of a crown. The pile isn't huge, but it's enough to keep you going for the rest of your life, anyway."
+      carryable true
+
+      on_take -> (g) {
+        Demogorgon::Terminal.puts "You load the treasure into your pack. As your dig into the pile you notice something shiny. Removing some more coins you find a gleaming sword beneath the pile."
+        g.item(:sword).unhide!
+      }
+    end
+
+    item do
+      id :sword
+      name "gleaming sword"
+      synonyms "sword"
+      hidden true
+      carryable true
+    end
   end
 
   room do
     id :north_chamber
-    name "North chamber"
+    name "the north chamber"
     short_description "A beautiful little cottage."
     long_description "A beautiful little while cottage set atop a vibrant green hill."
 
@@ -152,8 +198,18 @@ Demogorgon.define do
       id :troll
       name "Troll"
       friendly false
-      on_attack = -> (g) {
+      on_attack -> (g) {
         Demogorgon::Terminal.puts "You attempt to attack the troll."
+
+        if g.player.inventory.any? { |i| i.id == :sword }
+          Demogorgon::Terminal.puts "You kill the troll. The treasure is yours!"
+          g.win!
+        else
+          Demogorgon::Terminal.puts "You attack the troll, but you don't have the weapons to win. He bashes your head in!"
+          Demogorgon::Terminal.puts "You are dead."
+          g.lose!
+        end
+
       }
     end
   end

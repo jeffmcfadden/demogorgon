@@ -25,6 +25,10 @@ module Demogorgon
 
     commands << Demogorgon::Command.new("help", ["h"]) { |g| Terminal.puts "Move around by typing directions like 'north', 'south', etc. You can look around in more detail by typing 'look'. You can check your inventory by typing 'inventory'. Other common commands include 'take', 'get', 'open'. Not all commands are available all the time. Use your imagination." }
 
+    commands << Demogorgon::Command.new("map", []) do |g|
+      Terminal.puts "Sorry, you'll have to make your own map."
+    end
+
     commands << Demogorgon::Command.new("look", ["l"]) do |g, cmd|
       ignore_words = ['look', 'l', 'at', 'on']
 
@@ -35,8 +39,13 @@ module Demogorgon
         Terminal.puts "There are exits to the #{g.available_directions.join(', ')}"
       elsif item = g.current_location.items.find{ |i| i.name.downcase == cmd }
         Terminal.puts item.long_description
+        g.skip_next_status = true
+      elsif npc = g.current_location.npcs.find{ |i| i.name.downcase == cmd || i.nickname.downcase == cmd }
+        Terminal.puts npc.long_description
+        g.skip_next_status = true
       else
         Terminal.puts "I don't see a #{cmd} here."
+        g.skip_next_status = true
       end
 
     end
@@ -45,9 +54,11 @@ module Demogorgon
       item_name = cmd.strip.split( " " ).last&.downcase
       if item_name.nil?
         Terminal.puts "I'm not sure what you want to take."
-      elsif item = g.current_location.items.find{ |i| i.name.downcase == item_name }
+      elsif item = g.current_location.visible_items.find{ |i| i.name.downcase == item_name || i.synonyms.include?(item_name) }
         if item.carryable?
           g.player.inventory << item
+          g.current_location.items.delete item
+          item.on_take_block.(g) unless item.on_take_block.nil?
           Terminal.puts "You are now carrying #{item.article} #{item.name}."
         else
           Terminal.puts "You can't carry that."
@@ -64,6 +75,7 @@ module Demogorgon
       if name == ""
         Terminal.puts "You need to choose who to attack. For example, 'attack monster'."
       elsif npc = g.current_location.npcs.find{ |i| i.name.downcase == name }
+        puts "Attacking..."
         npc.attack!(g)
       else
         Terminal.puts "I don't see #{name} here."

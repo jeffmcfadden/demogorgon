@@ -25,7 +25,11 @@ Demogorgon::Terminal.puts ""
 
 ARGV.clear
 while false == @game.over?
-  Demogorgon::Terminal.puts @game.status
+  if @game.skip_next_status
+    @game.skip_next_status = false
+  else
+    Demogorgon::Terminal.puts @game.status
+  end
   Demogorgon::Terminal.print "> "
   cmd = gets.chomp.downcase
 

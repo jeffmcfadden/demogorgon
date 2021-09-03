@@ -1,7 +1,7 @@
 module Demogorgon
   class Room
     extend Buildable
-    buildable_with :id, :name, :short_description, :long_description, :on_visit, :preposition, :has_light
+    buildable_with :id, :name, :short_description, :long_description, :first_visit, :on_visit, :preposition, :has_light
 
     attr_accessor :visit_count
     attr_accessor :paths
@@ -17,10 +17,17 @@ module Demogorgon
       self.npcs  = []
       self.preposition = "at"
       self.has_light   = true
+
+      self.first_visit = -> (g) { self.short_description }
     end
 
     def visited(game)
       self.visit_count += 1
+
+      if self.visit_count == 1
+        Terminal.puts self.first_visit
+      end
+
       on_visit(game) unless on_visit.nil?
     end
 
@@ -40,6 +47,10 @@ module Demogorgon
       end
 
       @paths << @path
+    end
+
+    def visible_items
+      items.select{ |i| !(i.hidden?) }
     end
 
     def item(&block)
