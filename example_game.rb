@@ -36,8 +36,8 @@ Demogorgon.define do
     id :cell_2
     preposition "in"
     name "jail cell #2"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "another dark and dingy jail cell."
+    long_description "This jail cell is dark, but not as wet as the one you woke up in. There's a strange dark stain on the stone floor, but it doesn't look relevant."
 
     path :east, :central_hallway
 
@@ -47,8 +47,8 @@ Demogorgon.define do
     id :cell_3
     preposition "in"
     name "jail cell #3"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "a third empty jail cell."
+    long_description "This cell is completely empty, and the stone looks rather new. Perhaps it was recently renovated."
 
     path :east, :north_hallway
 
@@ -59,7 +59,7 @@ Demogorgon.define do
     preposition "in"
     name "the south hallway"
     short_description "Gross hallway with a guard lying asleep on the floor"
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    long_description "The hallway is made of small stone pressed into the earth. Moss grows in the corners. The walls and ceiling appear to be made of brick of some kind."
 
     path :west, :cell_1
     path :north, :central_hallway
@@ -91,8 +91,8 @@ Demogorgon.define do
   room do
     id :central_hallway
     name "the central hallway"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "A plain bit of the hallway."
+    long_description "The hallway is made of small stone pressed into the earth. Moss grows in the corners. The walls and ceiling appear to be made of brick of some kind."
 
     path :west,  :cell_2
     path :south, :south_hallway
@@ -112,8 +112,8 @@ Demogorgon.define do
   room do
     id :north_hallway
     name "the north hallway"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "A plain bit of the hallway."
+    long_description "The hallway is made of small stone pressed into the earth. Moss grows in the corners. The walls and ceiling appear to be made of brick of some kind."
 
     path :west,  :cell_3
     path :south, :central_hallway
@@ -123,8 +123,8 @@ Demogorgon.define do
   room do
     id :corridor
     name "a dark corridor"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "You are in a dark corridor."
+    long_description "The corridor has no light of its own, and seems to absorb any light that might leak in. Without your own light source, it's impossible to see in here."
     has_light false
 
     path :east,  :dark_stairs, true
@@ -135,8 +135,8 @@ Demogorgon.define do
     id :dark_stairs
     preposition "on"
     name "a dark staircase"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "A dark spiral staircase."
+    long_description "The stairs are made of stone, worn smooth from heavy foot traffic. The top of the stairs exits into a chamber of some kind, while the bottom exits into a dim chamber."
     has_light false
 
     path :west,  :corridor
@@ -146,8 +146,8 @@ Demogorgon.define do
   room do
     id :central_chamber
     name "the central chamber"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "The center of a large chamber."
+    long_description "The chamber is huge, stretching far over your head. It seems to be light by torches, but they're too high to be sure. "
 
     path :west,  :dark_stairs
     path :north, :north_chamber
@@ -157,8 +157,8 @@ Demogorgon.define do
   room do
     id :south_chamber
     name "the south chamber"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "The south end of a large chamber."
+    long_description "The chamber is huge, stretching far over your head. It seems to be light by torches, but they're too high to be sure."
 
     path :north, :central_chamber
 
@@ -189,8 +189,8 @@ Demogorgon.define do
   room do
     id :north_chamber
     name "the north chamber"
-    short_description "A beautiful little cottage."
-    long_description "A beautiful little while cottage set atop a vibrant green hill."
+    short_description "The south end of a large chamber."
+    long_description "The chamber is huge, stretching far over your head. It seems to be light by torches, but they're too high to be sure. In the center is a huge, angry troll."
 
     path :south, :central_chamber
 
